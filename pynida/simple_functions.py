@@ -45,20 +45,18 @@ def linear(x, a, b): #for linear fit
 
 def thr_by_hist(img, threshold, edge):
 	hist = cv2.calcHist([img], [0], None, [256], [0, 256])
+	hist = np.squeeze(hist)[:-1]  # reject max value at last bin
 
-	hist_list = [hist[n][0] for n in range(len(hist) - 1)]
-
-	i = np.argmax(hist_list)
-
-	while i < 253:#Как бы это переписать покрасивше...
-		if (hist_list[i] - hist_list[i + 1]) > edge and (hist_list[i + 1] - hist_list[i + 2]) < edge:
-			threshold = i + 10
-			break
-		i += 1
-	else:
-		print('Something wrong with threshold') #error msg
+	hist_diff = -np.diff(hist)
+	peak_position = np.argmax(hist)
+	# find the rightmost point of the background peak
+	for i in range(peak_position, len(hist) - 2):
+		if hist_diff[i] > edge > hist_diff[i+1]:
+			return i + 10
+	print('Something wrong with threshold')  # error msg
 	print(f'Basic threshold {threshold}')
 	return threshold
+
 
 def thr_by_level(img, minimal_area, step, constant):
 	thr = cv2.minMaxLoc(img)[1] #min_val,max_val,min_loc,max_loc
