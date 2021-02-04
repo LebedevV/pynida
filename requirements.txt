@@ -4,4 +4,4 @@ opencv-python
 pandas
 PyQt5
 scipy
->=scikit-image-0.18
+scikit-image>=0.18
