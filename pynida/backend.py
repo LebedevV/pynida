@@ -94,6 +94,11 @@ def oneshot_contours(img, savepath, plt_all=False):
         vol_t, invvol_t = calculate_volumes(dist_top, top_c_l)
         vol_b, invvol_b = calculate_volumes(dist_bot, bot_c_l)
 
+        # TODO: move this function out and probably rename
+        def cone_volume(radius, height):
+            area = np.pi * radius**2
+            return area * height / 3
+
         # TODO: refactor volume corrections
         if ts1.x != ts2.x:
             coeff_kl = (ts1.y - ts2.y)/(ts1.x - ts2.x)
@@ -104,8 +109,11 @@ def oneshot_contours(img, savepath, plt_all=False):
             else:
                 ss = 0
             # print(ss)
-            corr_vol_lt = ss/3*np.pi*Point.get_distance_between(mp1, top_c_l[0])*dist_top[0]**2
-            corr_vol_lb = -ss/3*np.pi*Point.get_distance_between(mp1, bot_c_l[0])*dist_bot[0]**2
+            corr_vol_lt = ss * cone_volume(radius=dist_top[0],
+                                           height=Point.get_distance_between(mp1, top_c_l[0]))
+
+            corr_vol_lb = -ss * cone_volume(radius=dist_bot[0],
+                                            height=Point.get_distance_between(mp1, bot_c_l[0]))
         else:
             corr_vol_lt = 0.
             corr_vol_lb = 0.
@@ -119,8 +127,10 @@ def oneshot_contours(img, savepath, plt_all=False):
             else:
                 ss = 0
             # print(ss)
-            corr_vol_rt = ss/3*np.pi*Point.get_distance_between(mp2, top_c_l[-1])*dist_top[-1]**2
-            corr_vol_rb = -ss/3*np.pi*Point.get_distance_between(mp2, bot_c_l[-1])*dist_bot[-1]**2
+            corr_vol_rt = ss * cone_volume(radius=dist_top[-1],
+                                           height=Point.get_distance_between(mp2, top_c_l[-1]))
+            corr_vol_rb = -ss * cone_volume(radius=dist_bot[-1],
+                                            height=Point.get_distance_between(mp2, bot_c_l[-1]))
         else:
             corr_vol_rt = 0.
             corr_vol_rb = 0.
