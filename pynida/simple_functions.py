@@ -359,3 +359,8 @@ def borderCheck(x,a,b):
 	else:
 		y = 0
 	return y
+
+
+def cone_volume(radius, height):
+    area = np.pi*radius**2
+    return area*height/3

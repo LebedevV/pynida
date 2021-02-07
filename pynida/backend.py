@@ -13,8 +13,9 @@ from skimage.segmentation import random_walker
 
 import cv2
 
-from pynida.simple_functions import thr_by_hist, basic_plot, thr_by_level, borderCheck, linear, find_minmax, prepare_contours, \
-    verify_contact
+from pynida.simple_functions import thr_by_hist, basic_plot, thr_by_level, borderCheck, linear, find_minmax, \
+    prepare_contours, \
+    verify_contact, cone_volume
 from pynida.classes.line import Line
 from pynida.classes.point import Point
 
@@ -94,46 +95,11 @@ def oneshot_contours(img, savepath, plt_all=False):
         vol_t, invvol_t = calculate_volumes(dist_top, top_c_l)
         vol_b, invvol_b = calculate_volumes(dist_bot, bot_c_l)
 
-        # TODO: move this function out and probably rename
-        def cone_volume(radius, height):
-            area = np.pi * radius**2
-            return area * height / 3
-
         # TODO: refactor volume corrections
-        if ts1.x != ts2.x:
-            coeff_kl = (ts1.y - ts2.y)/(ts1.x - ts2.x)
-            if line.coeff_k == 0.:
-                ss = 1 if (top_c_l[0].x - mp1.x) > 0 else -1
-            elif (coeff_kl + 1/line.coeff_k) != 0:
-                ss = -1 if (coeff_kl + 1/line.coeff_k) > 0 else 1
-            else:
-                ss = 0
-            # print(ss)
-            corr_vol_lt = ss * cone_volume(radius=dist_top[0],
-                                           height=Point.get_distance_between(mp1, top_c_l[0]))
-
-            corr_vol_lb = -ss * cone_volume(radius=dist_bot[0],
-                                            height=Point.get_distance_between(mp1, bot_c_l[0]))
-        else:
-            corr_vol_lt = 0.
-            corr_vol_lb = 0.
-
-        if sp1.x != sp2.x:
-            coeff_kl = (sp1.y - sp2.y)/(sp1.x - sp2.x)
-            if line.coeff_k == 0:
-                ss = -1 if (top_c_l[-1].x - mp2.x) > 0 else 1
-            elif (coeff_kl + 1/line.coeff_k) != 0:
-                ss = 1 if (coeff_kl + 1/line.coeff_k) > 0 else -1
-            else:
-                ss = 0
-            # print(ss)
-            corr_vol_rt = ss * cone_volume(radius=dist_top[-1],
-                                           height=Point.get_distance_between(mp2, top_c_l[-1]))
-            corr_vol_rb = -ss * cone_volume(radius=dist_bot[-1],
-                                            height=Point.get_distance_between(mp2, bot_c_l[-1]))
-        else:
-            corr_vol_rt = 0.
-            corr_vol_rb = 0.
+        corr_vol_lb, corr_vol_lt = volume_corrections(bot_c_l[0], top_c_l[0], dist_bot[0],
+                                                      dist_top[0], line, mp1, ts1, ts2, is_left=True)
+        corr_vol_rb, corr_vol_rt = volume_corrections(bot_c_l[-1], top_c_l[-1], dist_bot[-1],
+                                                      dist_top[-1], line, mp2, sp1, sp2, is_left=False)
         corrvol_t = corr_vol_lt + corr_vol_rt
         corrvol_b = corr_vol_lb + corr_vol_rb
         print("Vol ", vol_t, vol_b, corrvol_t, corrvol_b)
@@ -187,6 +153,33 @@ def oneshot_contours(img, savepath, plt_all=False):
     results['corrvol_b'] = corrvol_b
     results['corrvol_t'] = corrvol_t
     return results
+
+
+# TODO: refactor volume corrections
+def volume_corrections(bot_c_l: Point, top_c_l: Point, dist_bot: Point, dist_top: Point,
+                       line, mp1: Point, ts1: Point, ts2: Point, is_left: bool):
+    if ts1.x == ts2.x:
+        # no correction needed
+        return 0, 0
+
+    if line.is_horizontal():
+        ss = 1 if top_c_l.x > mp1.x else -1
+        ss = ss if is_left else -ss
+    else:
+        ts_contact_line = Line(ts1, ts2)
+        cosine = Line.cosine_distance(ts_contact_line, line)
+        if cosine == 0:
+            ss = 0
+        elif cosine < 0:
+            ss = -1
+        else:
+            ss = 1
+
+    corr_vol_lt = ss*cone_volume(radius=dist_top,
+                                 height=Point.get_distance_between(mp1, top_c_l))
+    corr_vol_lb = -ss*cone_volume(radius=dist_bot,
+                                  height=Point.get_distance_between(mp1, bot_c_l))
+    return corr_vol_lb, corr_vol_lt
 
 
 def oneshot_areas_proc(labels_fin, cr_test, output, plt_all=False):
