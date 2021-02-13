@@ -9,10 +9,16 @@
 
 
 from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt5.QtGui import QFont
 
 
 class Ui_MainWindow(object):
+    def __init__(self, config):
+        self.config = config["DEFAULT"]
+
     def setupUi(self, MainWindow):
+        MainWindow.setFont(QFont(self.config["GLOBAL_FONT_NAME"],
+                                 int(self.config["GLOBAL_FONT_SIZE"])))
         MainWindow.setObjectName("MainWindow")
         MainWindow.resize(624, 582)
         self.centralwidget = QtWidgets.QWidget(MainWindow)

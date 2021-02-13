@@ -1,8 +1,16 @@
 #!/usr/bin/env python
 
-import os
 import sys
+from configparser import ConfigParser
+from PyQt5 import QtWidgets
+from pynida.launch import mywindow
 
-sys.path.append(os.path.abspath('.'))
+if __name__ == "__main__":
+    app = QtWidgets.QApplication([])
 
-import pynida.launch
+    config = ConfigParser()
+    config.read('pynida/config.cfg')
+
+    application = mywindow(config)
+    application.show()
+    sys.exit(app.exec())

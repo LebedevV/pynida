@@ -1,9 +1,7 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
 
-import sys
 import os
-import numpy as np
 import scipy
 from scipy import ndimage#, interpolate
 from scipy.optimize import fsolve
@@ -12,9 +10,7 @@ import pandas as pd
 #for img rotation
 #from PIL import Image
 
-import matplotlib.pyplot as plt
-
-from matplotlib.widgets import Slider, Button, RectangleSelector
+from matplotlib.widgets import RectangleSelector
 #import matplotlib.image as mpimg
 #from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 #from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as NavigationToolbar
@@ -39,9 +35,9 @@ from pynida.window_comparison import *
 
 # Main window
 class mywindow(QtWidgets.QMainWindow):
-	def __init__(self):
+	def __init__(self, config):
 		super(mywindow, self).__init__()
-		self.ui = Ui_MainWindow()
+		self.ui = Ui_MainWindow(config)
 		self.ui.setupUi(self)
 
 		units = ['nm','μm','mm','m']
@@ -1994,10 +1990,3 @@ def toggle_selector_bar(event):
 		#scalebar_length_pix = max(contour[:, 1]) - min(contour[:, 1])
 		current_ax_scalebar.set_title('Reselect the scale bar and press "Enter" or press q to exit.')
 	plt.draw()
-############
-############
-
-app = QtWidgets.QApplication([])
-application = mywindow()
-application.show()
-sys.exit(app.exec())
