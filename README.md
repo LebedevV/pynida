@@ -44,6 +44,7 @@ scipy
 - (?) Graphical scheme of indentation to GUI
  
  **Planned work, short-term**
+- check __fps__ values in output files
 - proper logs should be configured  
 - allow shape analysis for the BF-TEM  
 - (partially done) preview of areas/contours, in pix/fr
