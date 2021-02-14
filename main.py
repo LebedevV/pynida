@@ -3,6 +3,8 @@
 import sys
 from configparser import ConfigParser
 from PyQt5 import QtWidgets
+from PyQt5.QtGui import QFont
+
 from pynida.launch import mywindow
 
 if __name__ == "__main__":
@@ -11,6 +13,10 @@ if __name__ == "__main__":
     config = ConfigParser()
     config.read('pynida/config.cfg')
 
-    application = mywindow(config)
+    app.setFont(
+        QFont(config["DEFAULT"]["GLOBAL_FONT_NAME"],
+              int(config["DEFAULT"]["GLOBAL_FONT_SIZE"])))
+
+    application = mywindow()
     application.show()
     sys.exit(app.exec())

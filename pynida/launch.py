@@ -35,9 +35,9 @@ from pynida.window_comparison import *
 
 # Main window
 class mywindow(QtWidgets.QMainWindow):
-	def __init__(self, config):
+	def __init__(self):
 		super(mywindow, self).__init__()
-		self.ui = Ui_MainWindow(config)
+		self.ui = Ui_MainWindow()
 		self.ui.setupUi(self)
 
 		units = ['nm','μm','mm','m']
