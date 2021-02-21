@@ -14,17 +14,21 @@ This software allows one to perform a full cycle of *in-situ* nanoindentation da
 ### Requirements
 matplotlib  
 numpy  
-opencv-python  
+opencv  
 pandas  
 PyQt5  
 scipy  
 \>=scikit-image-0.18
 
-##### Currently, to install the software one should install all the prerequisites, and to execute in the folder for choise the following commands:
-*\$git init*  
-*\$git pull https://github.com/LebedevV/pynida*
-##### Afterwards, to run it:
-*\$python pynida*
+### Installation
+#### via pip:
+- *\$pip install opencv-python-headless*
+- *\$pip install pynida*
+- *\$pynida*
+
+##### Manually: 
+- *\$git clone https://github.com/LebedevV/pynida*
+- *\$python pynida*
 
 ### Feature requests and planned work
 
@@ -44,7 +48,7 @@ scipy
 - (?) Graphical scheme of indentation to GUI
 
  **Planned work, short-term**
-- check __fps__ values in output files
+- check *fps* values in output files
 - proper logs should be configured  
 - allow shape analysis for the BF-TEM  
 - (partially done) preview of areas/contours, in pix/fr
