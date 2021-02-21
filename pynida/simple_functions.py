@@ -8,6 +8,7 @@ import matplotlib.pyplot as plt
 from skimage import measure #<0.16
 from typing import Tuple
 
+import pynida.classes
 from pynida.classes.point import Point
 from pynida.classes.points import Points
 

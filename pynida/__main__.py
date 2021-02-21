@@ -1,8 +1,21 @@
 #!/usr/bin/env python
 
-import os
-import sys
+import sys,os
+from PyQt5 import QtWidgets
+from PyQt5.QtGui import QFont
 
-sys.path.append(os.path.abspath('.'))
+from pynida.launch import mywindow
 
-import pynida.launch
+import pynida.classes
+
+def main():
+	app = QtWidgets.QApplication([])
+
+	app.setFont(QFont('Arial',10))
+
+	application = mywindow()
+	application.show()
+	sys.exit(app.exec())
+	
+if __name__ == "__main__":
+	main

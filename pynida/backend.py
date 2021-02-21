@@ -16,6 +16,7 @@ import cv2
 from pynida.simple_functions import thr_by_hist, basic_plot, thr_by_level, borderCheck, linear, find_minmax, \
     prepare_contours, \
     verify_contact, cone_volume
+import pynida.classes
 from pynida.classes.line import Line
 from pynida.classes.point import Point
 

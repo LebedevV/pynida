@@ -34,7 +34,7 @@ scipy
 - (not related to the software itself) scales measured by the scalebar and by metadata may be different
 -	(to check) button "q" for exit from plt windows is not working on Ubuntu
 - (to check) test imgs are saving nearby the opened file, not in the output dir
- 
+
  **Planned work, long-term**
 - add dm3/dm3 import
 - scale down preview (need in a lineEdit for that?)
@@ -42,7 +42,7 @@ scipy
 - fully automatic scale detection. Will allow one to deal with the variable magnification
 - for rotation: GUI with grid and drag&drop
 - (?) Graphical scheme of indentation to GUI
- 
+
  **Planned work, short-term**
 - check __fps__ values in output files
 - proper logs should be configured  
@@ -60,4 +60,3 @@ scipy
 - video is probing every time in update_crop. To replace with the affine transform
 - create a list of failed frames for areas/contours
 - add unit tests!
-  
