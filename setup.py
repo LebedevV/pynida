@@ -11,7 +11,7 @@ with open(path.join(this_directory, 'requirements.txt'), encoding='utf-8') as r:
 setup(
 	name = 'pynida',
 	packages = ['pynida','pynida.classes'],
-	version = '0.1.13',
+	version = '0.1.16',
 	license='GPLv3',
 	description = 'In-situ nanoindentation data analysis',
 	long_description=long_description,
