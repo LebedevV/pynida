@@ -1531,10 +1531,10 @@ class mywindow(QtWidgets.QMainWindow):
 		plt.close(fig)
 		plt.close()
 
-		self.ui.label_37.setPixmap(QPixmap(savepath +'_corrected.png').scaled(self.ui.label_10.size(), QtCore.Qt.KeepAspectRatio, QtCore.Qt.SmoothTransformation))
+		self.ui.label_37.setPixmap(QPixmap(savepath +'_corrected.png').scaled(self.ui.label_37.size(), QtCore.Qt.KeepAspectRatio, QtCore.Qt.SmoothTransformation))
 		self.ui.label_37.show()
-		self.ui.lineEdit_fps.setText(str(self.parameters[0]))
-		self.ui.lineEdit_shift.setText(str(self.parameters[1]))
+		self.ui.lineEdit_fps.setText(str(self.parameters['time_scale']))
+		self.ui.lineEdit_shift.setText(str(self.parameters['time_shift']))
 
 	def btnClicked_openComparison(self):
 		options = QFileDialog.Options()
@@ -1589,6 +1589,7 @@ class mywindow(QtWidgets.QMainWindow):
 			QMessageBox.about(self, "Error", "Please, check values of Poisson's ratio")			
 
 		if todo:
+			#if 1:
 			try:
 				self.time_c, self.disp_c, self.load_c = parse_corr_data(self.corr_filename,self.separator)
 				self.load_c = np.array(self.load_c) * float(self.ui.force_scale.text())
@@ -1780,6 +1781,9 @@ class mywindow(QtWidgets.QMainWindow):
 		right_border_sl.on_changed(update_determ)
 		#recall
 		resetax = plt.axes([0.75, 0.025, 0.1, 0.04])
+		global Estar_text
+		Estar_text = ax1.text(.95,.95,'', size=18, color='red', horizontalalignment='right',
+						verticalalignment='top', transform=ax1.transAxes)
 		global reset_but
 		reset_but = Button(resetax, 'Reset', hovercolor= '0.975')
 		reset_but.on_clicked(reset_determ)
@@ -1788,7 +1792,6 @@ class mywindow(QtWidgets.QMainWindow):
 		global young_button
 #       	yu_modulus=0
 		young_button = Button(youngax, 'Calc', hovercolor= '0.975')
-
 		young_button.on_clicked(self.young_determ)
 		plt.show()
 
@@ -1798,6 +1801,7 @@ class mywindow(QtWidgets.QMainWindow):
 		return determ_time[s1:s2],determ_d[s1:s2],determ_force[s1:s2]
 
 	def young_determ(self,val):
+		Estar_text.set_text('')
 		s1 = int(left_border_sl.val)
 		s2 = int(right_border_sl.val)
 		lp1.set_data(determ_d[s1], determ_force[s1])
@@ -1805,14 +1809,15 @@ class mywindow(QtWidgets.QMainWindow):
 		lp2.set_data(determ_time[s1], determ_d[s1])
 		rp2.set_data(determ_time[s2], determ_d[s2])
 
-		_,_,popt=self.e_determ(determ_d[s1:s2], determ_force[s1:s2])
+		estar,_,popt=self.e_determ(determ_d[s1:s2], determ_force[s1:s2])
 		#print(popt)
-
+		
 		dfplot.set_data(determ_d[s1:s2], determ_force[s1:s2])
 		if self.ui.radioButton_Y_Sph.isChecked() or self.ui.radioButton_Y_Cyl.isChecked():
 			fitplot.set_data(determ_d[s1:s2], sneddon(determ_d[s1:s2],popt[0],popt[1],popt[2]))
 		if self.ui.radioButton_Y_lin.isChecked():
 			fitplot.set_data(determ_d[s1:s2], linear(np.array(determ_d[s1:s2]),popt[0],popt[1]))
+		Estar_text.set_text('$E^{*} = $'+str(float(int(estar[0]*10000))/10)+' $GPa$')
 		fig_young.canvas.draw_idle()
 
 	def closeEvent(self, event):
