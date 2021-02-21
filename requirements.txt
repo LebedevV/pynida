@@ -1,6 +1,6 @@
 matplotlib
 numpy
-opencv-python
+#opencv-python
 pandas
 PyQt5
 scipy
