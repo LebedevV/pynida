@@ -86,7 +86,6 @@ def oneshot_contours(img, savepath, plt_all=False):
             invvol = np.sum(dl / radius**2 / np.pi)  # wout cones
             return vol, invvol
 
-
         top_c_l = line.orthogonal_projection(top_c)
         bot_c_l = line.orthogonal_projection(bot_c)
 
